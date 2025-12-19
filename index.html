@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM-driven HRI Literature Database</title>
+    <!-- Tailwind CSS for minimalist styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for trend visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ECharts for Sankey visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    
+    <!-- Configure custom colors (academic blue, light gray) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        academicBlue: '#1E40AF',
+                        lightGray: '#F3F4F6',
+                        deepGray: '#4B5563',
+                        morphologyHumanoid: '#3B82F6',
+                        morphologyFunctional: '#10B981',
+                        morphologyOther: '#8B5CF6',
+                        methodLab: '#EF4444',
+                        methodField: '#F59E0B',
+                        methodDemo: '#EC4899',
+                        methodInterview: '#6366F1',
+                        methodQuestionnaire: '#14B8A6',
+                        methodTechnical: '#F97316',
+                        evaluationObjective: '#10B981',
+                        evaluationSubjective: '#F59E0B',
+                        evaluationBoth: '#8B5CF6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white font-sans text-black">
+    <!-- Fixed top navigation bar -->
+    <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Website logo -->
+            <a href="#home" onclick="showPage('home')" class="flex items-center space-x-2">
+                <img src="ARK.png" alt="ARK logo" class="h-8 w-auto object-contain">
+                <span class="sr-only">ARK</span>
+            </a>
+            
+            <!-- Navigation links -->
+            <div class="flex gap-6">
+                <a href="#home" class="text-gray-700 hover:text-academicBlue text-sm font-medium" onclick="showPage('home')">Home</a>
+                <a href="#database" class="text-gray-700 hover:text-academicBlue text-sm font-medium" onclick="showPage('database')">Literature DB</a>
+                <a href="#findings" class="text-gray-700 hover:text-academicBlue text-sm font-medium" onclick="showPage('findings')">Key Findings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home page: Quick orientation and navigation -->
+    <section id="home" class="container mx-auto px-4 pt-20 pb-16">
+        <!-- ...existing home content... -->
+        <!-- Core information section -->
+        <div class="text-center mb-12">
+            <h1 class="text-2xl md:text-3xl text-academicBlue font-bold mb-4">LLM-driven Human-Robot Interaction Literature Database</h1>
+            <p class="text-gray-600 text-base md:text-lg">Based on 86 core empirical studies (2021-2025) focusing on LLM applications in HRI</p>
+        </div>
+
+        <!-- Statistics cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
+                <i class="fas fa-calendar-alt text-academicBlue text-2xl mb-3"></i>
+                <p class="text-lg font-medium">Study Period</p>
+                <p class="text-2xl text-academicBlue mt-2">2021-2025</p>
+                <p class="text-xs text-gray-500 mt-1">LLM-HRI research boom period</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
+                <i class="fas fa-book text-academicBlue text-2xl mb-3"></i>
+                <p class="text-lg font-medium">Total Literature</p>
+                <p class="text-2xl text-academicBlue mt-2">86 papers</p>
+                <p class="text-xs text-gray-500 mt-1">Core empirical studies</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
+                <i class="fas fa-tags text-academicBlue text-2xl mb-3"></i>
+                <p class="text-lg font-medium">Research Focus</p>
+                <p class="text-2xl text-academicBlue mt-2">9 categories</p>
+                <p class="text-xs text-gray-500 mt-1">Morphology/method/evaluation</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
+                <i class="fas fa-layer-group text-academicBlue text-2xl mb-3"></i>
+                <p class="text-lg font-medium">Coverage Areas</p>
+                <p class="text-2xl text-academicBlue mt-2">8 domains</p>
+                <p class="text-xs text-gray-500 mt-1">Healthcare/education/domestic etc.</p>
+            </div>           
+        </div>
+
+        <!-- Quick access buttons -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button onclick="showPage('database')" class="border border-academicBlue text-academicBlue px-6 py-3 rounded-md hover:bg-academicBlue hover:text-white transition-colors font-medium flex items-center justify-center">
+                <i class="fas fa-search mr-2"></i>Search Literature
+            </button>
+            <button onclick="showPage('findings')" class="border border-academicBlue text-academicBlue px-6 py-3 rounded-md hover:bg-academicBlue hover:text-white transition-colors font-medium flex items-center justify-center">
+                <i class="fas fa-chart-line mr-2"></i>View Key Findings
+            </button>
+        </div>
+        <!-- Footer note for Home page -->
+        <div class="mt-6 text-center text-sm text-gray-500">
+           anonymous LLM-driven HRI literature database
+        </div>
+        </section>
+
+    <!-- Literature database page: Search and browsing -->
+    <section id="database" class="container mx-auto px-4 pt-20 pb-16 hidden">
+        <!-- Search section -->
+        <div class="bg-gray-50 p-6 rounded-lg mb-10 shadow-sm border border-gray-100">
+            <div class="flex flex-col gap-4">
+                <!-- Keyword search -->
+                <div>
+                    <label class="text-sm text-gray-600 block mb-1 font-medium">Keyword Search</label>
+                    <div class="relative">
+                        <input type="text" id="keywordSearch" placeholder="Enter title/author/keyword (e.g., 'LLM+healthcare HRI')" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                        <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Filter criteria: nine-category layout in four rows -->
+                <!-- Row 1: Year, Venue -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Year</label>
+                        <select id="yearFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Years</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Venue</label>
+                        <select id="venueFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Venues</option>
+                            <option value="human factors in computing systems">CHI</option>
+                            <option value="acm/ieee international conference on human-robot interaction">HRI</option>
+                            <option value="acm transactions on human-robot interaction">THRI</option>
+                            <option value="acm on human-computer interaction">PACMHCI</option>
+                            <option value="proceedings of the acm on interactive, mobile, wearable and ubiquitous technologies">IMWUT</option>
+                            <option value="acm symposium on user interface software and technology">UIST</option>
+                            <option value="ROMAN">ROMAN</option>
+                            <option value="conference on intelligent virtual agents">IVA</option>
+                            <option value="designing interactive systems">DIS</option> 
+                            <option value="international conference on multimodal interaction">ICMI</option>
+                            <option value="ARSO">ARSO</option>
+                            <option value="ICRA">ICRA</option>
+                            <option value="IRSO">IRSO</option>
+                            <option value="SII">SII</option>
+                            <option value="ROBIO">ROBIO</option>
+                            <option value="COMPSAC">COMPSAC</option>
+                            <option value="automotive user interfaces and interactive vehicular applications">AutomotiveUI</option>
+                            <option value="scientific report">Scientific Report</option>
+                            <option value="ieee access">IEEE Access</option>
+                            <option value="ieee robotics & automation magazine">IEEE Robotics & Automation Magazine</option>  
+                            <option value="autonomous agents and multiagent systems">Autonomous Agents and Multiagent Systems</option>
+                            <option value="international journal of social robotics">International Journal of Social Robotics</option>
+                            <option value="ieee robotics and automation letters">IEEE Robotics and Automation Letters</option>
+                            <option value="ieee conference virtual reality and 3d user interfaces (vr)">IEEE conference virtual reality and 3D user interfaces (VR)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Sense, Interaction, Alignment -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Sense</label>
+                        <select id="senseFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Senses</option>
+                            <option>Static and Semi-Static Context Injection</option>
+                            <option>Modular Perception and Textual Abstraction</option>
+                            <option>Integrated Visual-Language Reasoning</option>
+                            <option>Emotional Grounding</option>
+                            <option>Task Intent Formulation</option>
+                            <option>Human Model Alignment</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Interaction</label>
+                        <select id="interactionFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Interaction</option>
+                            <option>Persona Adaptation and Conversational Fluidity</option>
+                            <option>Embodied Social Expressiveness</option>
+                            <option>Task-Oriented Planning and Execution</option>
+                            <option>Creative Storytelling and Social Engagement</option>
+                            <option>Social Initiation</option>
+                            <option>Anticipatory Assistance</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Alignment</label>
+                        <select id="alignmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Alignment</option>
+                            <option>Sustained Personalization</option>
+                            <option>Episodic Memory Integration</option>
+                            <option>Behavioral Repair in Task Execution</option>
+                            <option>Emotional Repair in Social Interaction</option>
+                            <option>Repair in Ethical and Normative Alignment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 3: Modality, Morphology, Autonomy -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Modality</label>
+                        <select id="modalityFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Modalities</option>
+                            <option>Text</option>
+                            <option>Voice</option>
+                            <option>Visuals</option>
+                            <option>Motion</option>
+                            <option>Hybrid</option>
+                            <option>Tangible and Haptic Interaction</option>
+                            <option>Proximity</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Morphology</label>
+                        <select id="morphologyFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Morphologies</option>
+                            <option>Humanoid</option>
+                            <option>Functional</option>
+                            <option>Zoomorphic</option>
+                            <option>Desktop companions</option>
+                            <option>AR/VR</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Autonomy</label>
+                        <select id="autonomyFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Autonomy</option>
+                            <option>Full Autonomy</option>
+                            <option>Semi-autonomy</option>
+                            <option>Teleoperation</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 4: Methodology, Evaluation Metrics, Application -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Methodology</label>
+                        <select id="methodologyFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Methods</option>
+                            <option>Laboratory Experiment</option>
+                            <option>Field Deployments</option>
+                            <option>Interviews</option>
+                            <option>Questionnaires</option>
+                            <option>Technical Evaluation</option>
+                            <option>Wizard-of-Oz (WoZ)</option>
+                            <option>Case Studies</option>
+                            <option>Simulation</option>
+                            <option>Co-design Workshops</option>
+                            <option>BodyStorming</option>
+                            <option>Think-aloud Protocols</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Evaluation Metrics</label>
+                        <select id="evaluationMetricFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Metrics</option>
+                            <option>Task Efficiency and Timing</option>
+                            <option>Task Accuracy and Performance</option>
+                            <option>LLM-Specific Performance</option>
+                            <option>User's Perceptual and Relational Experience</option>
+                            <option>Perceived Intelligence</option>
+                            <option>Anthropomorphism</option>
+                            <option>Usability</option>
+                            <option>Safety</option>
+                            <option>Cognitive Load and Workload</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-600 block mb-1 font-medium">Application</label>
+                        <select id="applicationFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-academicBlue focus:ring-1 focus:ring-academicBlue">
+                            <option value="all">All Applications</option>
+                            <option>Social and Conversational Systems</option>
+                            <option>Healthcare and Wellbeing</option>
+                            <option>Domestic and Everyday Use</option>
+                            <option>Teaching and Education</option>
+                            <option>Industrial Manufacturing</option>
+                            <option>AR/VR-enabled Interactions</option>
+                            <option>Public Spaces Service</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search button -->
+                <button onclick="filterLiterature()" class="bg-academicBlue text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition-colors font-medium flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i>Search Literature
+                </button>
+            </div>
+        </div>
+
+        <!-- Literature list section -->
+        <div id="literatureList" class="space-y-6">
+            <!-- Literature cards will be generated by JavaScript -->
+        </div>
+
+        <!-- Back to top button -->
+        <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="fixed bottom-8 right-8 bg-white border border-gray-200 rounded-full p-3 shadow-md text-academicBlue hover:bg-gray-50 transition-colors">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </section>
+
+    <!-- Literature detail modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 rounded-lg shadow-xl">
+            <div class="flex justify-between items-start mb-6">
+                <h3 id="detailTitle" class="text-xl font-bold text-academicBlue"></h3>
+                <button onclick="hideDetail()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="detailContent" class="text-sm space-y-4">
+                <!-- Details will be populated by JavaScript -->
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="hideDetail()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-200 transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key findings page: Review conclusions -->
+    <section id="findings" class="container mx-auto px-4 pt-20 pb-16 hidden">
+        <!-- Page title -->
+        <h2 class="text-2xl text-academicBlue font-bold mb-8 text-center">Key Findings of LLM-driven HRI Research</h2>
+
+        <!-- Research trend chart -->
+        <div class="bg-gray-50 p-6 rounded-lg mb-10 shadow-sm border border-gray-100">
+            <h3 class="text-lg font-bold mb-4 text-center">LLM-HRI Literature Publication Trend in the ACM digital library from 2015 to 2025</h3>
+            <div class="w-full">
+                <canvas id="trendChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-600 text-center mt-4">Tip: data of 2025 is cut off at September 10, 2025.</p>
+        </div>
+
+        <!-- Charts grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <!-- Morphology distribution -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                <h3 class="text-lg font-bold mb-4 text-center">Robot Morphology Distribution</h3>
+                <div class="w-full h-64 flex justify-center items-center">
+                    <canvas id="morphologyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Application domain distribution -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                <h3 class="text-lg font-bold mb-4 text-center">Application Domain Distribution</h3>
+                <div class="w-full h-64  flex justify-center items-center"">
+                    <canvas id="applicationChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top venues distribution -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                <h3 class="text-lg font-bold mb-4 text-center">Top Publication Venues</h3>
+                <div class="w-full h-64  flex justify-center items-center"">
+                    <canvas id="venueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Autonomy distribution -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                <h3 class="text-lg font-bold mb-4 text-center">Robot Autonomy Distribution</h3>
+                <div class="w-full h-64 flex justify-center items-center">
+                    <canvas id="autonomyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sankey flow visualization -->
+        <div class="bg-gray-50 p-6 rounded-lg mb-10 shadow-sm border border-gray-100" style="overflow-x: auto;">
+            <h3 class="text-lg font-bold mb-4 text-center">Interaction Modalities & Research Flow (Sankey)</h3>
+            <div id="sankeyChart" style="height:900px; width:1600px; position:relative; margin:0 auto;"></div>
+        </div>
+
+        <!-- Key findings section -->
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-12">
+            <h3 class="text-lg font-bold mb-6 text-center">Core Conclusions from 4 Research Questions</h3>
+            <div class="space-y-8">
+                <!-- RQ1 -->
+                <div class="border-l-4 border-academicBlue pl-6 py-4">
+                    <p class="font-bold text-base text-academicBlue mb-3">RQ1: How do LLMs transform the HRI research domain?</p>
+                    <p class="text-gray-700 leading-relaxed">LLMs are fundamentally transforming the HRI research domain by shifting its paradigm from static, pre-programmed interaction pipelines to adaptive, generative, and socially grounded embodied intelligence. Our synthesis identifies a reconceptualization of HRI processes through a <span class="font-semibold">Sense-Interaction-Alignment framework</span>. LLMs enable robots to move beyond basic environmental perception (Sense) to achieve contextual and social understanding. They redefine robot action as collaborative, proactive, and agentic Interaction, capable of generative social communication and task co-creation. Finally, they introduce a continuous Alignment phase, emphasizing long-term personalization, memory, and multi-level repair mechanisms to ensure behaviors remain safe, ethical, and congruent with human expectations over time. This transformation positions LLMs not merely as tools but as core cognitive engines that facilitate more natural, flexible, and context-aware human-robot collaboration.</p>
+                </div>
+
+                <!-- RQ2 -->
+                <div class="border-l-4 border-green-500 pl-6 py-4">
+                    <p class="font-bold text-base text-green-700 mb-3">RQ2: How are LLMs integrated into HRI systems?</p>
+                    <p class="text-gray-700 leading-relaxed">The integration of LLMs into HRI systems is multifaceted, involving deliberate design choices across modality, morphology, and autonomy levels, which are deployed across diverse application domains. Integration is primarily achieved by embedding LLMs as central reasoning and dialogue engines within a robot's architecture. This involves: <span class="font-semibold">1) Selecting interaction modalities</span> (text, voice, visuals, motion, hybrid) where LLMs process inputs and generate outputs; <span class="font-semibold">2) Choosing robot morphologies</span> (humanoid, functional, etc.) that align with the intended social or task-oriented application; and <span class="font-semibold">3) Determining the level of autonomy</span> (teleoperation, semi-autonomy, full autonomy), which defines the balance between LLM-driven agency and human oversight. These technical integrations are applied across scenarios such as social companionship, healthcare, education, domestic assistance, and industrial collaboration, demonstrating the versatility of LLMs in enhancing specific HRI capabilities like personalized dialogue, multimodal understanding, and adaptive task planning.</p>
+                </div>
+
+                <!-- RQ3 -->
+                <div class="border-l-4 border-orange-500 pl-6 py-4">
+                    <p class="font-bold text-base text-orange-700 mb-3">RQ3: What research methods are used to assess LLM-driven HRI systems?</p>
+                    <p class="text-gray-700 leading-relaxed">The evaluation of LLM-driven HRI systems employs a <span class="font-semibold">mixed-methods approach</span> that combines established HRI methodologies with new metrics tailored to assess LLM-specific capabilities. Methodologically, research relies heavily on controlled laboratory experiments and, increasingly, on field deployments to test robustness in real-world settings. These are complemented by qualitative methods (interviews, case studies) and quantitative tools (questionnaires, standardized scales). The Wizard-of-Oz technique remains prevalent to simulate advanced capabilities during development. Evaluation strategies have evolved to include both <span class="font-semibold">objective metrics</span> (e.g., task completion time, accuracy, LLM response latency, code execution success) and expanded subjective metrics. The latter now assess not only traditional constructs like usability and perceived safety but also LLM-influenced dimensions such as perceived intelligence (including theory-of-mind and emotional intelligence), quality of relational experience, dialogue fluency, and anthropomorphism tied to conversational competence.</p>
+                </div>
+
+                <!-- RQ4 -->
+                <div class="border-l-4 border-purple-500 pl-6 py-4">
+                    <p class="font-bold text-base text-purple-700 mb-3">RQ4: What are the opportunities, challenges, and implications for future LLM-driven HRI research?</p>
+                    <p class="text-gray-700 leading-relaxed">LLMs present significant opportunities to advance HRI by enabling more natural communication, robust contextual reasoning, and longitudinal adaptation. However, our review synthesizes eleven key challenges that delineate critical future research directions. These are organized within the <span class="font-semibold">Sense-Interaction-Alignment framework</span>:</p>
+                    <ul class="mt-3 space-y-2 text-gray-700">
+                        <li><span class="font-semibold">Sense:</span> Challenges include ensuring the reliability and factual grounding of LLM understanding, achieving stable multimodal and emotional intelligence perception, and facilitating equitable engagement in multi-user scenarios.</li>
+                        <li><span class="font-semibold">Interaction:</span> Key issues involve aligning the robot's social intelligence with its physical morphology, balancing increased autonomy with appropriate human oversight and control, calibrating user trust to prevent overreliance, and safeguarding privacy amid heightened data collection.</li>
+                        <li><span class="font-semibold">Alignment:</span> Central challenges are stabilizing long-term personalization without causing dependency, designing mechanisms to sustain engagement over extended periods, and developing proactive, context-aware repair strategies for when interactions fail.</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed mt-3">Collectively, these challenges highlight the need for future work to focus on robustness, ethical design, longitudinal evaluation, and human-centered alignment to realize the safe and effective integration of LLMs into embodied HRI systems.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to top button -->
+        <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="fixed bottom-8 right-8 bg-white border border-gray-200 rounded-full p-3 shadow-md text-academicBlue hover:bg-gray-50 transition-colors">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </section>
+
+    <!-- Literature data -->
+    <script src="literatureData.js"></script>
+    <script>
+
+        // Chart data (updated per user request)
+        const chartData = {
+            yearDistribution: {"2015":1, "2016":2, "2017":0, "2018":1, "2019":1, "2020":5, "2021":7, "2022":21, "2023":108, "2024":311, "2025":268},
+            morphologyDistribution: {"Humanoid": 39, "Functional": 31, "Zoomomorphic": 2, "Desktop": 9, "VR/AR": 5},
+            methodDistribution: {"Laboratory Experiment": 38, "Questionnaire": 42, "Interview": 18, "Field Deployment": 14, "Technical Evaluation": 20, "Demonstration": 10, "Other": 8},
+            evaluationDistribution: {"Subjective": 30, "Objective": 6, "Both": 50},
+            applicationDistribution: {"Social and conversational systems": 19, "Healthcare and Wellbeing": 12, "Domestic and everyday use": 17, "Teaching and education": 13, "Industrial manufacturing": 7, "AR/VR-enabled interactions": 6, "Public spaces service": 8, "Other": 4},
+            venueDistribution: {
+                "HRI": 25,
+                "CHI": 11,
+                "ROMAN": 9,
+                "International Journal of Social Robotics": 7,
+                "THRI": 4,
+                "ICRA": 3,
+                "Other": 27
+            }
+        };
+    </script>
+
+    <!-- Core interaction scripts -->
+    <script>
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            // Show target page
+            document.getElementById(pageId).classList.remove('hidden');
+            // Scroll to top
+            window.scrollTo({top:0, behavior:'smooth'});
+        }
+
+        // Show literature details
+        function showDetail(literatureId) {
+            const literature = literatureData.find(item => item.id === literatureId);
+            if (!literature) return;
+
+            document.getElementById('detailTitle').textContent = literature.title;
+            
+            // Helper functions for each category with fixed colors
+            function senseColor(name) {
+                return `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function interactionColor(name) {
+                return `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function alignmentColor(name) {
+                return `<span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function modalityColor(name) {
+                return `<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function morphologyColor(name) {
+                return `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function autonomyColor(name) {
+                return `<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function methodologyColor(name) {
+                return `<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function evaluationColor(name) {
+                return `<span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+            function applicationColor(name) {
+                return `<span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block">${name}</span>`;
+            }
+
+            // build content with nine-category badges in order
+            let content = `
+                <div class="space-y-4">
+                    <div>
+                        <p class="font-bold text-gray-700">Authors:</p>
+                        <p class="text-gray-600">${literature.authors}</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-700">Venue:</p>
+                        <p class="text-gray-600">${literature.venue}</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-700">DOI:</p>
+                        <a href="${literature.url}" target="_blank" class="text-academicBlue hover:underline">${literature.doi}</a>
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-700">Year:</p>
+                        <p class="text-gray-600">${literature.year}</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-700">Abstract:</p>
+                        <p class="text-gray-600 leading-relaxed">${literature.abstract}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="font-bold text-gray-700 mb-2">Detailed Categories</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Sense</p>
+                                <div class="mt-2">${(literature.sense || '').split(',').map(s => s.trim()).filter(Boolean).map(s => senseColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Interaction</p>
+                                <div class="mt-2">${(literature.interaction || '').split(',').map(s => s.trim()).filter(Boolean).map(s => interactionColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Alignment</p>
+                                <div class="mt-2">${(literature.alignment || '').split(',').map(s => s.trim()).filter(Boolean).map(s => alignmentColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Modality & Channels</p>
+                                <div class="mt-2">${(literature.modality || '').split(',').map(s => s.trim()).filter(Boolean).map(s => modalityColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Morphology</p>
+                                <div class="mt-2">${morphologyColor(literature.morphology || '')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Autonomy</p>
+                                <div class="mt-2">${(literature.autonomy || '').split(',').map(s => s.trim()).filter(Boolean).map(s => autonomyColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Study Method</p>
+                                <div class="mt-2">${(literature.studyMethod || '').split(',').map(s => s.trim()).filter(Boolean).map(s => methodologyColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Evaluation Metrics</p>
+                                <div class="mt-2">${(literature.evaluationMetrics || '').split(',').map(s => s.trim()).filter(Boolean).map(s => evaluationColor(s)).join('')}</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Application Domain</p>
+                                <div class="mt-2">${applicationColor(literature.application || '')}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function hideDetail() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // Utility: normalize text for matching
+        function norm(text) {
+            return (text || '').toString().toLowerCase().trim();
+        }
+
+        // Initialize literature metadata for filtering
+        function initLiteratureMetadata() {
+            const cards = [];
+            literatureData.forEach(lit => {
+                cards.push({
+                    id: lit.id,
+                    year: lit.year.toString(),
+                    venue: norm(lit.venue),
+                    morphology: norm(lit.morphology),
+                    domain: norm(lit.application),
+                    methods: (lit.studyMethod || '').toLowerCase().split(',').map(m => m.trim()),
+                    evaluation: norm(lit.evaluationMetrics || lit.evaluation)
+                });
+            });
+        }
+
+        // Generate literature cards
+        function generateLiteratureCards() {
+            const container = document.getElementById('literatureList');
+            container.innerHTML = '';
+            
+            literatureData.forEach(literature => {
+                const card = document.createElement('div');
+                card.className = 'border border-gray-200 p-5 rounded-lg hover:shadow-md transition-shadow';
+                card.dataset.id = literature.id;
+                card.dataset.year = literature.year;
+                card.dataset.venue = literature.venue;
+                card.dataset.morphology = literature.morphology.toLowerCase();
+                card.dataset.domain = literature.application.toLowerCase();
+                card.dataset.evaluation = (literature.evaluationMetrics || literature.evaluation || '').toLowerCase();
+                // nine-category fields
+                card.dataset.modality = (literature.modality || '').toString().toLowerCase();
+                card.dataset.autonomy = (literature.autonomy || '').toString().toLowerCase();
+                card.dataset.sense = (literature.sense || '').toString().toLowerCase();
+                card.dataset.interaction = (literature.interaction || '').toString().toLowerCase();
+                card.dataset.alignment = (literature.alignment || '').toString().toLowerCase();
+                
+                // Extract methods for data attribute
+                const methods = (literature.studyMethod || '').toLowerCase().split(',');
+                card.dataset.methods = methods.join('|');
+
+                // Build a combined tags string for flexible matching across nine categories
+                const tags = [literature.title, literature.authors, literature.venue, literature.morphology, literature.studyMethod, literature.sense, literature.interaction, literature.alignment, literature.evaluationMetrics || literature.evaluation, literature.application, literature.modality, literature.autonomy].filter(Boolean).join(' ').toLowerCase();
+                // Normalize typographic apostrophes to ASCII to improve matching
+                card.dataset.tags = tags.replace(/\u2019/g, "'");
+                
+                // Get method color based on type
+                function getMethodColor(method) {
+                    const lowerMethod = method.toLowerCase();
+                    if (lowerMethod.includes('laboratory')) return 'bg-red-100 text-red-800';
+                    if (lowerMethod.includes('field')) return 'bg-yellow-100 text-yellow-800';
+                    if (lowerMethod.includes('demonstration')) return 'bg-pink-100 text-pink-800';
+                    if (lowerMethod.includes('interview')) return 'bg-indigo-100 text-indigo-800';
+                    if (lowerMethod.includes('questionnaire')) return 'bg-teal-100 text-teal-800';
+                    if (lowerMethod.includes('technical')) return 'bg-orange-100 text-orange-800';
+                    return 'bg-gray-100 text-gray-800';
+                }
+                
+                // Get morphology color
+                function getMorphologyColor(morphology) {
+                    const lowerMorphology = morphology.toLowerCase();
+                    if (lowerMorphology.includes('humanoid')) return 'bg-blue-100 text-blue-800';
+                    if (lowerMorphology.includes('functional')) return 'bg-green-100 text-green-800';
+                    return 'bg-purple-100 text-purple-800';
+                }
+                
+                // Get evaluation color
+                function getEvaluationColor(evaluation) {
+                    const lowerEvaluation = evaluation.toLowerCase();
+                    if (lowerEvaluation.includes('objective')) return 'bg-green-100 text-green-800';
+                    if (lowerEvaluation.includes('subjective')) return 'bg-yellow-100 text-yellow-800';
+                    return 'bg-purple-100 text-purple-800';
+                }
+                
+                // Get application color
+                function getApplicationColor(application) {
+                    const lowerApplication = application.toLowerCase();
+                    if (lowerApplication.includes('healthcare')) return 'bg-red-100 text-red-800';
+                    if (lowerApplication.includes('education')) return 'bg-blue-100 text-blue-800';
+                    if (lowerApplication.includes('domestic')) return 'bg-green-100 text-green-800';
+                    if (lowerApplication.includes('industrial')) return 'bg-gray-100 text-gray-800';
+                    if (lowerApplication.includes('ar/vr')) return 'bg-purple-100 text-purple-800';
+                    if (lowerApplication.includes('public')) return 'bg-yellow-100 text-yellow-800';
+                    if (lowerApplication.includes('social')) return 'bg-pink-100 text-pink-800';
+                    return 'bg-gray-100 text-gray-800';
+                }
+                
+                card.innerHTML = `
+                    <h3 class="text-lg font-bold text-academicBlue mb-2 line-clamp-2">${literature.title}</h3>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-1">${literature.authors} | ${literature.year}, ${literature.venue.split(',')[0]}</p>
+                    <div class="mb-2">
+                        <!-- detailed category badges removed from list view; visible only in detail modal -->
+                    </div>
+                    <button onclick="showDetail(${literature.id})" class="text-academicBlue text-sm font-medium hover:underline flex items-center">
+                        <i class="fas fa-info-circle mr-1"></i> View Details
+                    </button>
+                `;
+
+                container.appendChild(card);
+            });
+            
+            // Initialize metadata after generating cards
+            initLiteratureMetadata();
+        }
+
+        // Literature filtering with all criteria
+        function filterLiterature() {
+            const keyword = norm(document.getElementById('keywordSearch').value);
+            const year = norm(document.getElementById('yearFilter').value);
+            const venue = norm(document.getElementById('venueFilter').value);
+            const morphology = norm(document.getElementById('morphologyFilter').value);
+            const sense = norm(document.getElementById('senseFilter').value);
+            const interaction = norm(document.getElementById('interactionFilter').value);
+            const alignment = norm(document.getElementById('alignmentFilter').value);
+            const modality = norm(document.getElementById('modalityFilter').value);
+            const domain = norm(document.getElementById('applicationFilter').value);
+            const method = norm(document.getElementById('methodologyFilter').value);
+            const autonomy = norm(document.getElementById('autonomyFilter').value);
+            const evaluation = norm(document.getElementById('evaluationMetricFilter').value);
+
+            const cards = document.querySelectorAll('#literatureList > div.border');
+            cards.forEach(card => {
+                let visible = true;
+                const tags = norm(card.dataset.tags || '');
+                const cardMethods = norm(card.dataset.methods || '');
+
+                if (year && year !== 'all') {
+                    const cardYear = norm(card.dataset.year || '');
+                    if (cardYear !== year) visible = false;
+                }
+
+                if (visible && venue && venue !== 'all') {
+                    const cardVenue = norm(card.dataset.venue || '');
+                    // Use substring match so selecting 'CHI' matches 'Proceedings of the 2025 CHI Conference...'
+                    if (!cardVenue.includes(venue)) visible = false;
+                }
+
+                if (visible && morphology && morphology !== 'all') {
+                    const cardMorphology = norm(card.dataset.morphology || '');
+                    if (!cardMorphology.includes(morphology)) visible = false;
+                }
+
+                if (visible && sense && sense !== 'all') {
+                    if (!tags.includes(sense)) visible = false;
+                }
+
+                if (visible && interaction && interaction !== 'all') {
+                    if (!tags.includes(interaction)) visible = false;
+                }
+
+                if (visible && alignment && alignment !== 'all') {
+                    if (!tags.includes(alignment)) visible = false;
+                }
+
+                if (visible && modality && modality !== 'all') {
+                    const cardMod = norm(card.dataset.modality || '');
+                    if (!cardMod.includes(modality) && !tags.includes(modality)) visible = false;
+                }
+
+                if (visible && autonomy && autonomy !== 'all') {
+                    const cardAut = norm(card.dataset.autonomy || '');
+                    if (!cardAut.includes(autonomy) && !tags.includes(autonomy)) visible = false;
+                }
+
+                if (visible && domain && domain !== 'all') {
+                    const cardDomain = norm(card.dataset.domain || '');
+                    if (!cardDomain.includes(domain)) visible = false;
+                }
+
+                if (visible && method && method !== 'all') {
+                    if (!cardMethods.includes(method) && !tags.includes(method)) visible = false;
+                }
+
+                if (visible && evaluation && evaluation !== 'all') {
+                    const cardEvaluation = norm(card.dataset.evaluation || '');
+                    if (!cardEvaluation.includes(evaluation) && !tags.includes(evaluation)) visible = false;
+                }
+
+                if (visible && keyword) {
+                    const title = norm(card.querySelector('h3')?.textContent || '');
+                    const authors = norm(card.querySelector('p.text-sm.text-gray-600')?.textContent || '');
+                    const cardYear = norm(card.dataset.year || '');
+                    const cardVenue = norm(card.dataset.venue || '');
+                    if (!title.includes(keyword) && !authors.includes(keyword) && !tags.includes(keyword) && !cardYear.includes(keyword) && !cardVenue.includes(keyword)) visible = false;
+                }
+
+                card.style.display = visible ? '' : 'none';
+            });
+        }
+
+        // Filter by domain (category navigation)
+        function filterByDomain(domain) {
+            const el = document.getElementById('applicationFilter');
+            if (el) el.value = domain;
+            showPage('database');
+            filterLiterature();
+        }
+
+        // Filter by technical direction (category navigation)
+        function filterByTech() {
+            showPage('database');
+            filterLiterature();
+        }
+
+        // Filter by research method (category navigation)
+        function filterByMethod(method) {
+            const el = document.getElementById('methodologyFilter');
+            if (el) el.value = method;
+            showPage('database');
+            filterLiterature();
+        }
+
+        // Initialize charts
+        function initCharts() {
+            // Trend chart
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(chartData.yearDistribution),
+                    datasets: [{
+                        label: 'Number of Publications',
+                        data: Object.values(chartData.yearDistribution),
+                        borderColor: '#1E40AF',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Publications',
+                                font: { size: 12 }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                font: { size: 12 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Morphology chart
+            const morphologyCtx = document.getElementById('morphologyChart').getContext('2d');
+            new Chart(morphologyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(chartData.morphologyDistribution),
+                    datasets: [{
+                        data: Object.values(chartData.morphologyDistribution),
+                        backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EC4899'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Application chart
+            const applicationCtx = document.getElementById('applicationChart').getContext('2d');
+            new Chart(applicationCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(chartData.applicationDistribution),
+                    datasets: [{
+                        label: 'Number of Publications',
+                        data: Object.values(chartData.applicationDistribution),
+                        backgroundColor: '#1E40AF',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Publications',
+                                font: { size: 12 }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Venue chart
+            const venueCtx = document.getElementById('venueChart').getContext('2d');
+            new Chart(venueCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(chartData.venueDistribution).map(venue => venue.length > 20 ? venue.substring(0, 20) + '...' : venue),
+                    datasets: [{
+                        label: 'Number of Publications',
+                        data: Object.values(chartData.venueDistribution),
+                        backgroundColor: '#1E40AF',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Publications',
+                                font: { size: 12 }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Autonomy chart
+            const autonomyCtx = document.getElementById('autonomyChart').getContext('2d');
+            new Chart(autonomyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Full Autonomy', 'Semi-Autonomy', 'Teleoperation'],
+                    datasets: [{
+                        data: [46, 37, 3],
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Sankey chart (ECharts) - 9-layer structure
+            try {
+                const sankeyDom = document.getElementById('sankeyChart');
+                if (sankeyDom) {
+                    const sankeyChart = echarts.init(sankeyDom);
+                    
+                    // 1. Layer definitions with colors
+                    const layers = [
+                        {
+                            color: "#5470c6",
+                            names: ["Static and Semi-Static Context Injection", "Modular Perception and Textual Abstraction", "Integrated Visual-Language Reasoning", "Emotional Grounding", "Task Intent Formulation", "Human Model Alignment"]
+                        },
+                        {
+                            color: "#91cc75",
+                            names: ["Persona Adaptation and Conversational Fluidity", "Embodied Social Expressiveness", "Task-Oriented Planning and Execution", "Creative Storytelling and Social Engagement", "Social Initiation", "Anticipatory Assistance"]
+                        },
+                        {
+                            color: "#fac858",
+                            names: ["Sustained Personalization", "Episodic Memory Integration", "Behavioral Repair in Task Execution", "Emotional Repair in Social Interaction", "Repair in Ethical and Normative Alignment"]
+                        },
+                        {
+                            color: "#73c0de",
+                            names: ["Text", "Voice", "Visuals", "Motion", "Hybrid", "Tangible and Haptic Interaction", "Proximity"]
+                        },
+                        {
+                            color: "#ee6666",
+                            names: ["Humanoid", "Functional", "zoomorphic", "desktop companions", "VR/AR"]
+                        },
+                        {
+                            color: "#3ba272",
+                            names: ["Full Autonomy", "Semi-Autonomy", "Teleoperation"]
+                        },
+                        {
+                            color: "#fc8452",
+                            names: ["Laboratory Experiment", "Field Deployments", "Interviews", "Questionnaires", "Technical Evaluation", "Wizard-of-Oz (WoZ)", "Case studies", "simulations", "co-design workshops", "bodystorming", "think-aloud protocols"]
+                        },
+                        {
+                            color: "#9a60b4",
+                            names: ["Task Efficiency and Timing", "Task Accuracy and Performance", "LLM-Specific Performance", "User's Perceptual and Relational Experience", "Perceived Intelligence", "Anthropomorphism", "Usability", "Safety", "Cognitive Load and Workload"]
+                        },
+                        {
+                            color: "#ea7ccc",
+                            names: ["Healthcare and Wellbeing", "Public spaces service", "Social and conversational systems", "AR/VR-enabled interactions", "Industrial manufacturing", "Domestic and everyday use", "Teaching and education", "Other"]
+                        }
+                    ];
+                    
+                    // 2. Generate nodes from layers
+                    const nodes = [];
+                    layers.forEach(layer => {
+                        layer.names.forEach(name => {
+                            nodes.push({ name, itemStyle: { color: layer.color } });
+                        });
+                    });
+                    
+                    // 3. Layer mappings and link generation
+                    const l1ToL2 = {
+                        "Static and Semi-Static Context Injection": {"Persona Adaptation and Conversational Fluidity": 9, "Embodied Social Expressiveness": 4, "Task-Oriented Planning and Execution": 12, "Creative Storytelling and Social Engagement": 1, "Social Initiation": 7, "Anticipatory Assistance": 6},
+                        "Modular Perception and Textual Abstraction": {"Persona Adaptation and Conversational Fluidity": 14, "Embodied Social Expressiveness": 7, "Task-Oriented Planning and Execution": 10, "Creative Storytelling and Social Engagement": 5, "Social Initiation": 9, "Anticipatory Assistance": 8},
+                        "Integrated Visual-Language Reasoning": {"Persona Adaptation and Conversational Fluidity": 5, "Embodied Social Expressiveness": 5, "Task-Oriented Planning and Execution": 7, "Creative Storytelling and Social Engagement": 2, "Social Initiation": 4, "Anticipatory Assistance": 5},
+                        "Emotional Grounding": {"Persona Adaptation and Conversational Fluidity": 12, "Embodied Social Expressiveness": 7, "Task-Oriented Planning and Execution": 4, "Creative Storytelling and Social Engagement": 4, "Social Initiation": 8, "Anticipatory Assistance": 5},
+                        "Task Intent Formulation": {"Persona Adaptation and Conversational Fluidity": 14, "Embodied Social Expressiveness": 8, "Task-Oriented Planning and Execution": 18, "Creative Storytelling and Social Engagement": 3, "Social Initiation": 9, "Anticipatory Assistance": 7},
+                        "Human Model Alignment": {"Persona Adaptation and Conversational Fluidity": 6, "Embodied Social Expressiveness": 3, "Task-Oriented Planning and Execution": 8, "Creative Storytelling and Social Engagement": 2, "Social Initiation": 8, "Anticipatory Assistance": 6}
+                    };
+
+                    const l2ToL3 = {
+                        "Persona Adaptation and Conversational Fluidity": {"Sustained Personalization": 7, "Episodic Memory Integration": 13, "Behavioral Repair in Task Execution": 4, "Emotional Repair in Social Interaction": 7, "Repair in Ethical and Normative Alignment": 5},
+                        "Embodied Social Expressiveness": {"Sustained Personalization": 3, "Episodic Memory Integration": 3, "Behavioral Repair in Task Execution": 3, "Emotional Repair in Social Interaction": 6, "Repair in Ethical and Normative Alignment": 3},
+                        "Task-Oriented Planning and Execution": {"Sustained Personalization": 6, "Episodic Memory Integration": 9, "Behavioral Repair in Task Execution": 8, "Emotional Repair in Social Interaction": 0, "Repair in Ethical and Normative Alignment": 1},
+                        "Creative Storytelling and Social Engagement": {"Sustained Personalization": 4, "Episodic Memory Integration": 3, "Behavioral Repair in Task Execution": 2, "Emotional Repair in Social Interaction": 4, "Repair in Ethical and Normative Alignment": 0},
+                        "Social Initiation": {"Sustained Personalization": 8, "Episodic Memory Integration": 10, "Behavioral Repair in Task Execution": 3, "Emotional Repair in Social Interaction": 4, "Repair in Ethical and Normative Alignment": 3},
+                        "Anticipatory Assistance": {"Sustained Personalization": 6, "Episodic Memory Integration": 5, "Behavioral Repair in Task Execution": 2, "Emotional Repair in Social Interaction": 1, "Repair in Ethical and Normative Alignment": 1}
+                    };
+
+                    const l3ToL4 = {
+                        "Sustained Personalization": {"Text": 8, "Voice": 14, "Visuals": 10, "Motion": 8, "Hybrid": 10, "Tangible and Haptic Interaction": 3, "Proximity": 1},
+                        "Episodic Memory Integration": {"Text": 15, "Voice": 19, "Visuals": 13, "Motion": 16, "Hybrid": 15, "Tangible and Haptic Interaction": 3, "Proximity": 5},
+                        "Behavioral Repair in Task Execution": {"Text": 7, "Voice": 11, "Visuals": 8, "Motion": 9, "Hybrid": 8, "Tangible and Haptic Interaction": 2, "Proximity": 3},
+                        "Emotional Repair in Social Interaction": {"Text": 4, "Voice": 10, "Visuals": 5, "Motion": 7, "Hybrid": 3, "Tangible and Haptic Interaction": 0, "Proximity": 1},
+                        "Repair in Ethical and Normative Alignment": {"Text": 6, "Voice": 9, "Visuals": 10, "Motion": 6, "Hybrid": 6, "Tangible and Haptic Interaction": 0, "Proximity": 2}
+                    };
+
+                    const l4ToL5 = {
+                        "Text": {"Humanoid": 21, "Functional": 25, "zoomorphic": 1, "desktop companions": 4, "VR/AR": 2},
+                        "Voice": {"Humanoid": 36, "Functional": 22, "zoomorphic": 2, "desktop companions": 8, "VR/AR": 9},
+                        "Visuals": {"Humanoid": 22, "Functional": 20, "zoomorphic": 2, "desktop companions": 7, "VR/AR": 4},
+                        "Motion": {"Humanoid": 20, "Functional": 21, "zoomorphic": 1, "desktop companions": 7, "VR/AR": 3},
+                        "Hybrid": {"Humanoid": 27, "Functional": 17, "zoomorphic": 2, "desktop companions": 5, "VR/AR": 2},
+                        "Tangible and Haptic Interaction": {"Humanoid": 2, "Functional": 5, "zoomorphic": 0, "desktop companions": 2, "VR/AR": 0},
+                        "Proximity": {"Humanoid": 5, "Functional": 6, "zoomorphic": 0, "desktop companions": 0, "VR/AR": 2}
+                    };
+
+                    const l5ToL6 = {
+                        "Humanoid": {"Full Autonomy": 29, "Semi-Autonomy": 10, "Teleoperation": 0},
+                        "Functional": {"Full Autonomy": 10, "Semi-Autonomy": 20, "Teleoperation": 2},
+                        "zoomorphic": {"Full Autonomy": 1, "Semi-Autonomy": 0, "Teleoperation": 1},
+                        "desktop companions": {"Full Autonomy": 4, "Semi-Autonomy": 5, "Teleoperation": 0},
+                        "VR/AR": {"Full Autonomy": 1, "Semi-Autonomy": 3, "Teleoperation": 0}
+                    };
+
+                    const l6ToL7 = {
+                        "Full Autonomy": {"Laboratory Experiment": 32, "Field Deployments": 8, "Interviews": 15, "Questionnaires": 41, "Technical Evaluation": 26, "Wizard-of-Oz (WoZ)": 2, "Case studies": 7, "simulations": 8, "co-design workshops": 4, "bodystorming": 2, "think-aloud protocols": 0},
+                        "Semi-Autonomy": {"Laboratory Experiment": 25, "Field Deployments": 8, "Interviews": 12, "Questionnaires": 28, "Technical Evaluation": 23, "Wizard-of-Oz (WoZ)": 5, "Case studies": 4, "simulations": 7, "co-design workshops": 2, "bodystorming": 0, "think-aloud protocols": 2},
+                        "Teleoperation": {"Laboratory Experiment": 1, "Field Deployments": 1, "Interviews": 3, "Questionnaires": 2, "Technical Evaluation": 3, "Wizard-of-Oz (WoZ)": 1, "Case studies": 0, "simulations": 0, "co-design workshops": 0, "bodystorming": 0, "think-aloud protocols": 0}
+                    };
+
+                    const l7ToL8 = {
+                        "Laboratory Experiment": {"Task Efficiency and Timing": 36, "Task Accuracy and Performance": 31, "LLM-Specific Performance": 19, "User's Perceptual and Relational Experience": 42, "Perceived Intelligence": 20, "Anthropomorphism": 14, "Usability": 22, "Safety": 19, "Cognitive Load and Workload": 11},
+                        "Field Deployments": {"Task Efficiency and Timing": 10, "Task Accuracy and Performance": 6, "LLM-Specific Performance": 5, "User's Perceptual and Relational Experience": 12, "Perceived Intelligence": 6, "Anthropomorphism": 4, "Usability": 8, "Safety": 4, "Cognitive Load and Workload": 2},
+                        "Interviews": {"Task Efficiency and Timing": 18, "Task Accuracy and Performance": 13, "LLM-Specific Performance": 5, "User's Perceptual and Relational Experience": 27, "Perceived Intelligence": 14, "Anthropomorphism": 7, "Usability": 15, "Safety": 8, "Cognitive Load and Workload": 9},
+                        "Questionnaires": {"Task Efficiency and Timing": 40, "Task Accuracy and Performance": 35, "LLM-Specific Performance": 23, "User's Perceptual and Relational Experience": 59, "Perceived Intelligence": 24, "Anthropomorphism": 17, "Usability": 28, "Safety": 19, "Cognitive Load and Workload": 14},
+                        "Technical Evaluation": {"Task Efficiency and Timing": 32, "Task Accuracy and Performance": 32, "LLM-Specific Performance": 22, "User's Perceptual and Relational Experience": 37, "Perceived Intelligence": 19, "Anthropomorphism": 12, "Usability": 20, "Safety": 13, "Cognitive Load and Workload": 9},
+                        "Wizard-of-Oz (WoZ)": {"Task Efficiency and Timing": 2, "Task Accuracy and Performance": 2, "LLM-Specific Performance": 2, "User's Perceptual and Relational Experience": 8, "Perceived Intelligence": 4, "Anthropomorphism": 1, "Usability": 4, "Safety": 2, "Cognitive Load and Workload": 0},
+                        "Case studies": {"Task Efficiency and Timing": 5, "Task Accuracy and Performance": 10, "LLM-Specific Performance": 5, "User's Perceptual and Relational Experience": 11, "Perceived Intelligence": 3, "Anthropomorphism": 2, "Usability": 5, "Safety": 3, "Cognitive Load and Workload": 2},
+                        "simulations": {"Task Efficiency and Timing": 13, "Task Accuracy and Performance": 11, "LLM-Specific Performance": 8, "User's Perceptual and Relational Experience": 11, "Perceived Intelligence": 4, "Anthropomorphism": 2, "Usability": 8, "Safety": 1, "Cognitive Load and Workload": 4},
+                        "co-design workshops": {"Task Efficiency and Timing": 1, "Task Accuracy and Performance": 2, "LLM-Specific Performance": 2, "User's Perceptual and Relational Experience": 6, "Perceived Intelligence": 2, "Anthropomorphism": 0, "Usability": 2, "Safety": 2, "Cognitive Load and Workload": 2},
+                        "bodystorming": {"Task Efficiency and Timing": 0, "Task Accuracy and Performance": 0, "LLM-Specific Performance": 1, "User's Perceptual and Relational Experience": 2, "Perceived Intelligence": 0, "Anthropomorphism": 0, "Usability": 0, "Safety": 0, "Cognitive Load and Workload": 0},
+                        "think-aloud protocols": {"Task Efficiency and Timing": 1, "Task Accuracy and Performance": 2, "LLM-Specific Performance": 1, "User's Perceptual and Relational Experience": 2, "Perceived Intelligence": 2, "Anthropomorphism": 0, "Usability": 2, "Safety": 1, "Cognitive Load and Workload": 2}
+                    };
+
+                    const l8ToL9 = {
+                        "Task Efficiency and Timing": {"Healthcare and Wellbeing": 4, "Public spaces service": 4, "Social and conversational systems": 11, "AR/VR-enabled interactions": 5, "Industrial manufacturing": 5, "Domestic and everyday use": 10, "Teaching and education": 5, "Other": 3},
+                        "Task Accuracy and Performance": {"Healthcare and Wellbeing": 3, "Public spaces service": 4, "Social and conversational systems": 11, "AR/VR-enabled interactions": 3, "Industrial manufacturing": 7, "Domestic and everyday use": 5, "Other": 2},
+                        "LLM-Specific Performance": {"Healthcare and Wellbeing": 3, "Public spaces service": 2, "Social and conversational systems": 12, "AR/VR-enabled interactions": 1, "Industrial manufacturing": 5, "Domestic and everyday use": 3, "Teaching and education": 3, "Other": 0},
+                        "User's Perceptual and Relational Experience": {"Healthcare and Wellbeing": 9, "Public spaces service": 6, "Social and conversational systems": 15, "AR/VR-enabled interactions": 4, "Industrial manufacturing": 7, "Domestic and everyday use": 12, "Teaching and education": 11, "Other": 2},
+                        "Perceived Intelligence": {"Healthcare and Wellbeing": 3, "Public spaces service": 3, "Social and conversational systems": 9, "AR/VR-enabled interactions": 1, "Industrial manufacturing": 1, "Domestic and everyday use": 6, "Teaching and education": 6, "Other": 1},
+                        "Anthropomorphism": {"Healthcare and Wellbeing": 1, "Public spaces service": 2, "Social and conversational systems": 9, "AR/VR-enabled interactions": 1, "Industrial manufacturing": 0, "Domestic and everyday use": 1, "Teaching and education": 3, "Other": 2},
+                        "Usability": {"Healthcare and Wellbeing": 4, "Public spaces service": 4, "Social and conversational systems": 3, "AR/VR-enabled interactions": 2, "Industrial manufacturing": 3, "Domestic and everyday use": 9, "Teaching and education": 4, "Other": 3},
+                        "Safety": {"Healthcare and Wellbeing": 5, "Public spaces service": 1, "Social and conversational systems": 4, "AR/VR-enabled interactions": 3, "Industrial manufacturing": 3, "Domestic and everyday use": 3, "Teaching and education": 4, "Other": 1},
+                        "Cognitive Load and Workload": {"Healthcare and Wellbeing": 1, "Public spaces service": 0, "Social and conversational systems": 1, "AR/VR-enabled interactions": 1, "Industrial manufacturing": 2, "Domestic and everyday use": 3, "Teaching and education": 4, "Other": 2}
+                    };
+
+                    // Generate links
+                    const links = [];
+                    function addLinks(mapping) {
+                        Object.keys(mapping).forEach(source => {
+                            const targets = mapping[source];
+                            Object.keys(targets).forEach(target => {
+                                const value = targets[target];
+                                if (value && value > 0) {
+                                    links.push({ source, target, value });
+                                }
+                            });
+                        });
+                    }
+                    addLinks(l1ToL2);
+                    addLinks(l2ToL3);
+                    addLinks(l3ToL4);
+                    addLinks(l4ToL5);
+                    addLinks(l5ToL6);
+                    addLinks(l6ToL7);
+                    addLinks(l7ToL8);
+                    addLinks(l8ToL9);
+
+                    const sankeyOption = {
+                        tooltip: { trigger: 'item', triggerOn: 'mousemove' },
+                        series: [{
+                            type: 'sankey',
+                            data: nodes,
+                            links: links,
+                            emphasis: { focus: 'adjacency' },
+                            orient: 'horizontal',
+                            nodeWidth: 20,
+                            nodeGap: 12,
+                            label: { fontSize: 6, color: '#333' },
+                            lineStyle: { color: 'source', curveness: 0.5 }
+                        }]
+                    };
+                    
+                    sankeyChart.setOption(sankeyOption);
+                    window.addEventListener('resize', () => sankeyChart.resize());
+                }
+            } catch (e) {
+                console.warn('ECharts sankey init failed:', e);
+            }
+        }
+
+        // Initialize page when loaded
+        window.onload = function() {
+            // Generate literature cards
+            generateLiteratureCards();
+            
+            // Add event listeners to filter controls
+            ['yearFilter','venueFilter','senseFilter','interactionFilter','alignmentFilter','modalityFilter','morphologyFilter','autonomyFilter','methodologyFilter','evaluationMetricFilter','applicationFilter'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', filterLiterature);
+                }
+            });
+            
+            // Add event listener to keyword search
+            const keywordInput = document.getElementById('keywordSearch');
+            if (keywordInput) {
+                keywordInput.addEventListener('input', filterLiterature);
+            }
+            
+            // Initialize charts
+            initCharts();
+
+            // Run initial filter
+            filterLiterature();
+        };
+    </script>
+</body>
+</html>
